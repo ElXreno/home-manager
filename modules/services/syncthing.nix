@@ -211,16 +211,15 @@ let
     ''
   );
 
-  defaultSyncthingArgs = [
-    "${syncthing}"
-    "-no-browser"
-    "-no-restart"
-    "-no-upgrade"
-    "-gui-address=${if isUnixGui then "unix://" else ""}${cfg.guiAddress}"
-    "-logflags=0"
-  ];
+  defaultSyncthingArgs = lib.cli.toGNUCommandLine { } {
+    "no-browser" = true;
+    "no-restart" = true;
+    "no-upgrade" = true;
+    "gui-address" = (if isUnixGui then "unix://" else "") + cfg.guiAddress;
+    "logflags" = 0;
+  };
 
-  syncthingArgs = defaultSyncthingArgs ++ cfg.extraOptions;
+  syncthingArgs = [ "${syncthing}" ] ++ defaultSyncthingArgs ++ cfg.extraOptions;
 in
 {
   meta.maintainers = [ lib.maintainers.rycee ];
